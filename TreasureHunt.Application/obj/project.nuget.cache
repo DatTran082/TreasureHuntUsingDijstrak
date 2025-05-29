@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "SSlhYn0FJGY=",
+  "success": true,
+  "projectFilePath": "/Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Application/TreasureHunt.Application.csproj",
+  "expectedPackageFiles": [
+    "/Users/dattran/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.5/microsoft.extensions.dependencyinjection.abstractions.9.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
