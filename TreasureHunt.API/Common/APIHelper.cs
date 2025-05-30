@@ -24,6 +24,7 @@ namespace TreasureHunt.API.Controllers
 
             if (result.Code != ResultCode.Success)
             {
+                result.Data = string.Empty;
                 Console.WriteLine($"{apiName}: {JsonSerializer.Serialize(result.Data)}");
             }
             else

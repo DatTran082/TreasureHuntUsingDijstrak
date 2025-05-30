@@ -49,7 +49,9 @@ public class TreasureHuntMapsResponse : BaseResponse
             Data = new List<TreasureMap>(); // Default value if Data is not a double
         }
     }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public TreasureHuntMapsResponse()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
     }
 

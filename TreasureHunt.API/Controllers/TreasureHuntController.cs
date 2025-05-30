@@ -1,4 +1,4 @@
-using System.Net.Http.Json;
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +8,8 @@ using TreasureHunt.Application.Interfaces;
 using TreasureHunt.Application.Models;
 using TreasureHunt.Infrastructure.Data.Entities;
 using TreasureHunt.Infrastructure.Interfaces;
+using System.Reflection;
+
 
 namespace TreasureHunt.API.Controllers;
 
@@ -26,7 +28,7 @@ public class TreasureHuntController : APIHelper
     }
 
     [HttpPost("solve")]
-    public async Task<TreasureHuntResponse> Post(string? rawrequest)
+    public async Task<TreasureHuntResponse> Solve(string? rawrequest)
     {
         var result = new Result<object>();
         try
@@ -34,7 +36,7 @@ public class TreasureHuntController : APIHelper
             if (string.IsNullOrEmpty(rawrequest))
             {
                 result.Code = ResultCode.InvalidInput;
-                return ContentReturn<TreasureHuntResponse>(result, "Treasure");
+                return ContentReturn<TreasureHuntResponse>(result, "Solve");
             }
             TreasureHuntRequest request = null;
             try
@@ -45,13 +47,13 @@ public class TreasureHuntController : APIHelper
             {
                 result.Code = ResultCode.InvalidInput;
                 result.Message = "Invalid JSON format.";
-                return ContentReturn<TreasureHuntResponse>(result, "Treasure");
+                return ContentReturn<TreasureHuntResponse>(result, "Solve");
             }
 
             if (request == null)
             {
                 result.Code = ResultCode.InvalidInput;
-                return ContentReturn<TreasureHuntResponse>(result, "Treasure");
+                return ContentReturn<TreasureHuntResponse>(result, "Solve");
             }
 
             var checkRequest = request.checkParam();
@@ -61,7 +63,7 @@ public class TreasureHuntController : APIHelper
             if (string.IsNullOrEmpty(inputre))
             {
                 result.Code = ResultCode.InvalidInput;
-                return ContentReturn<TreasureHuntResponse>(result, "Treasure");
+                return ContentReturn<TreasureHuntResponse>(result, "Solve");
             }
 
 
@@ -70,13 +72,13 @@ public class TreasureHuntController : APIHelper
             {
                 result.Code = ResultCode.InvalidInput;
                 result.Message = "Invalid TreasureInput format.";
-                return ContentReturn<TreasureHuntResponse>(result, "Treasure");
+                return ContentReturn<TreasureHuntResponse>(result, "Solve");
             }
             else
             {
                 var resultc = _solverService.Solve(inputTreasure);
                 result.Data = resultc;
-                return ContentReturn<TreasureHuntResponse>(result, "Treasure");
+                return ContentReturn<TreasureHuntResponse>(result, "Solve");
             }
         }
 
@@ -85,13 +87,13 @@ public class TreasureHuntController : APIHelper
             result.Code = ResultCode.SystemError;
             result.Message = ex.Message;
             result.Data = null;
-            return ContentReturn<TreasureHuntResponse>(result, "Treasure");
+            return ContentReturn<TreasureHuntResponse>(result, "Solve");
         }
 
     }
 
     [HttpGet("GetAllMaps")]
-    public async Task<TreasureHuntMapsResponse> Get()
+    public async Task<TreasureHuntMapsResponse> GetAllMaps()
     {
         var result = new Result<object>();
         try
@@ -119,23 +121,29 @@ public class TreasureHuntController : APIHelper
     }
 
     [HttpPost("CreateMap")]
-    public async Task<TreasureHuntMapsResponse> CreateMap(TreasureInput input)
+    public async Task<TreasureHuntMapsResponse> CreateMap(TreasureInput request)
     {
         var result = new Result<object>();
         try
         {
-            var map = await _mapService.CreateMapAsync(input);
+
+            if (request == null)
+            {
+                result.Code = ResultCode.InvalidInput;
+                return ContentReturn<TreasureHuntMapsResponse>(result, "CreateMap");
+            }
+
+            var map = await _mapService.CreateMapAsync(request);
             result.Data = new List<TreasureMap>() { map };
             result.Message = "Map created successfully";
-            return ContentReturn<TreasureHuntMapsResponse>(result, "Treasure");
+            return ContentReturn<TreasureHuntMapsResponse>(result, "CreateMap");
         }
-
         catch (Exception ex)
         {
             result.Code = ResultCode.SystemError;
             result.Message = ex.Message;
-            result.Data = null;
-            return ContentReturn<TreasureHuntMapsResponse>(result, "Treasure");
+            result.Data = string.Empty;
+            return ContentReturn<TreasureHuntMapsResponse>(result, "CreateMap");
         }
     }
 
