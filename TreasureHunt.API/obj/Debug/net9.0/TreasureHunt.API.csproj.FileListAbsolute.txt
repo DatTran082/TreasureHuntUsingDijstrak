@@ -165,3 +165,4 @@
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.API/obj/Debug/net9.0/TreasureHunt.API.pdb
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.API/obj/Debug/net9.0/TreasureHunt.API.genruntimeconfig.cache
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.API/obj/Debug/net9.0/ref/TreasureHunt.API.dll
+/Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.API/obj/Debug/net9.0/TreasureHunt.API.sourcelink.json

@@ -20,3 +20,4 @@
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Domain/obj/Debug/net9.0/refint/TreasureHunt.Domain.dll
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Domain/obj/Debug/net9.0/TreasureHunt.Domain.pdb
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Domain/obj/Debug/net9.0/ref/TreasureHunt.Domain.dll
+/Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Domain/obj/Debug/net9.0/TreasureHunt.Domain.sourcelink.json

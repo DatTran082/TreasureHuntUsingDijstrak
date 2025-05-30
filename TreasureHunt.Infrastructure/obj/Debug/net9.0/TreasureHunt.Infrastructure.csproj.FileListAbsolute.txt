@@ -34,3 +34,4 @@
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Infrastructure/obj/Debug/net9.0/TreasureHunt.Infrastructure.pdb
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Infrastructure/obj/Debug/net9.0/TreasureHunt.Infrastructure.genruntimeconfig.cache
 /Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Infrastructure/obj/Debug/net9.0/ref/TreasureHunt.Infrastructure.dll
+/Users/dattran/Documents/this/C#/Algorithms/TreasureHunt/GameEngines/TreasureHunt/TreasureHunt.Infrastructure/obj/Debug/net9.0/TreasureHunt.Infrastructure.sourcelink.json

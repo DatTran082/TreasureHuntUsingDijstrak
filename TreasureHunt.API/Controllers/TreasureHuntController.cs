@@ -112,7 +112,8 @@ public class TreasureHuntController : APIHelper
         {
             result.Code = ResultCode.SystemError;
             result.Message = ex.Message;
-            result.Data = null;
+            result.Data = string.Empty;
+
             return ContentReturn<TreasureHuntMapsResponse>(result, "GetAllMaps");
         }
     }
@@ -125,7 +126,7 @@ public class TreasureHuntController : APIHelper
         {
             var map = await _mapService.CreateMapAsync(input);
             result.Data = new List<TreasureMap>() { map };
-
+            result.Message = "Map created successfully";
             return ContentReturn<TreasureHuntMapsResponse>(result, "Treasure");
         }
 
