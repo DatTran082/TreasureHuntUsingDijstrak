@@ -44,7 +44,7 @@ public class TreasureHuntController : APIHelper
             var checkRequest = request.checkParam();
 
 
-            if (request.data == null)
+            if (request?.data == null)
             {
                 result.Code = ResultCode.InvalidInput;
                 result.Message = "Invalid TreasureInput";
@@ -53,19 +53,30 @@ public class TreasureHuntController : APIHelper
             else
             {
                 var mapInput = await _mapService.GetMapByIdAsync(request.data);
-                var solution = _solverService.SolveTreasureMap(mapInput);
-                // var readdslns = await _mapService.AddSolutionByMapIdAsync(solution);
+
+                if (mapInput == null)
+                {
+                    result.Code = ResultCode.InvalidInput;
+                    result.Message = "Map not exist";
+                    return ContentReturn<TreasureHuntResponse>(result, "Solve");
+                }
+                else
+                {
+                    var solution = _solverService.SolveTreasureMap(mapInput);
+                    // var readdslns = await _mapService.AddSolutionByMapIdAsync(solution);
 
 
-                result.Data = solution;
-                return ContentReturn<TreasureHuntResponse>(result, "Solve");
+                    result.Data = solution;
+                    return ContentReturn<TreasureHuntResponse>(result, "Solve");
+                }
+
             }
         }
         catch (Exception ex)
         {
             result.Code = ResultCode.SystemError;
             result.Message = ex.Message;
-            result.Data = null;
+            result.Data = string.Empty;
             return ContentReturn<TreasureHuntResponse>(result, "Solve");
         }
 
