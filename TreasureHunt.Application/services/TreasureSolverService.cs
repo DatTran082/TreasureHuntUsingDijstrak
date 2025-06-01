@@ -1,5 +1,6 @@
 namespace TreasureHunt.Application.Services;
 
+using System.Text.Json;
 using TreasureHunt.Application.Interfaces;
 using TreasureHunt.Application.Models;
 
@@ -28,8 +29,10 @@ public class TreasureSolverService : ITreasureSolverService
 
     public Solution SolveTreasureMap(TreasureMap mapInput)
     {
+
         TreasureInput treasureInputFromMap = CreateTreasureInputFromMap(mapInput);
         List<MapCell> path = FindShortestPath(treasureInputFromMap);
+
         double fuel = CalculateTotalFuel(path);
 
         return new Solution
@@ -43,101 +46,153 @@ public class TreasureSolverService : ITreasureSolverService
     public List<MapCell> FindShortestPath(TreasureInput map)
     {
 
-        int n = map.N, m = map.M, p = map.P;
-        int[][] matrix = map.Matrix;
-
-        var positions = new List<(int x, int y)>[p + 1];
-        for (int i = 0; i <= p; i++)
+        try
         {
-            positions[i] = new List<(int x, int y)>();
-        }
+            int n = map.N, m = map.M, p = map.P;
+            int[][] matrix = map.Matrix;
 
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < m; j++)
+            var positions = new List<(int x, int y)>[p + 1];
+            for (int i = 0; i <= p; i++)
             {
-                positions[matrix[i][j]].Add((i, j));
+                positions[i] = new List<(int x, int y)>();
             }
 
-        }
+            // for (int i = 0; i < n; i++)
+            // {
+            //     for (int j = 0; j < m; j++)
+            //     {
+            //         positions[matrix[i][j]].Add((i, j));
+            //     }
 
-        double[,] cost = new double[n, m];
-        (int x, int y)[,] prev = new (int, int)[n, m];
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < m; j++)
+            // }
+
+            for (int i = 0; i < n; i++)
             {
-                cost[i, j] = double.MaxValue;
-                prev[i, j] = (-1, -1);
-            }
-        }
-
-        foreach (var (x, y) in positions[1])
-        {
-            cost[x, y] = Distance(0, 0, x, y);
-            prev[x, y] = (0, 0);
-        }
-
-        for (int num = 2; num <= p; num++)
-        {
-            foreach (var (x2, y2) in positions[num])
-            {
-                double minCost = double.MaxValue;
-                (int x, int y) bestPrev = (-1, -1);
-                foreach (var (x1, y1) in positions[num - 1])
+                for (int j = 0; j < m; j++)
                 {
-                    double dist = Distance(x1, y1, x2, y2);
-                    double total = cost[x1, y1] + dist;
-                    if (total < minCost)
+                    int level = matrix[i][j];
+                    if (level >= 0 && level <= p)
                     {
-                        minCost = total;
-                        bestPrev = (x1, y1);
+                        positions[level].Add((i, j));
                     }
                 }
-                cost[x2, y2] = minCost;
-                prev[x2, y2] = bestPrev;
+            }
+
+            double[,] cost = new double[n, m];
+            (int x, int y)[,] prev = new (int, int)[n, m];
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    cost[i, j] = double.MaxValue;
+                    prev[i, j] = (-1, -1);
+                }
+            }
+
+            foreach (var (x, y) in positions[1])
+            {
+                cost[x, y] = Distance(0, 0, x, y);
+                prev[x, y] = (0, 0);
+            }
+
+            for (int num = 2; num <= p; num++)
+            {
+                foreach (var (x2, y2) in positions[num])
+                {
+                    double minCost = double.MaxValue;
+                    (int x, int y) bestPrev = (-1, -1);
+                    foreach (var (x1, y1) in positions[num - 1])
+                    {
+                        double dist = Distance(x1, y1, x2, y2);
+                        double total = cost[x1, y1] + dist;
+                        if (total < minCost)
+                        {
+                            minCost = total;
+                            bestPrev = (x1, y1);
+                        }
+                    }
+                    cost[x2, y2] = minCost;
+                    prev[x2, y2] = bestPrev;
+                }
+            }
+
+            // Tìm điểm kết thúc tối ưu
+            double finalCost = double.MaxValue;
+            (int x, int y) end = (-1, -1);
+            foreach (var (x, y) in positions[p])
+            {
+                if (cost[x, y] < finalCost)
+                {
+                    finalCost = cost[x, y];
+                    end = (x, y);
+                }
+            }
+
+            // Truy ngược đường đi thành List<MapCell>
+            var resultPath = new List<MapCell>();
+            var current = end;
+
+            // while (current != (0, 0))
+            // {
+            //     resultPath.Add(new MapCell
+            //     {
+            //         // MapId = map.Id,
+            //         RowIndex = current.x,
+            //         ColIndex = current.y,
+            //         Value = matrix[current.x][current.y]
+            //     });
+            //     current = prev[current.x, current.y];
+            // }
+
+            // // Thêm điểm bắt đầu (0,0)
+            // resultPath.Add(new MapCell
+            // {
+            //     // MapId = map.Id,
+            //     RowIndex = 0,
+            //     ColIndex = 0,
+            //     Value = matrix[0][0]
+            // });
+
+            // resultPath.Reverse();
+            // return resultPath;
+
+
+            while (current != (0, 0) && current.x != -1 && current.y != -1)
+            {
+                resultPath.Add(new MapCell
+                {
+                    RowIndex = current.x,
+                    ColIndex = current.y,
+                    Value = matrix[current.x][current.y]
+                });
+                current = prev[current.x, current.y];
+            }
+
+            // chi add path neu tim thay duong di
+            if (current == (0, 0))
+            {
+                resultPath.Add(new MapCell
+                {
+                    RowIndex = 0,
+                    ColIndex = 0,
+                    Value = matrix[0][0]
+                });
+                resultPath.Reverse();
+                return resultPath;
+            }
+            else
+            {
+                return new List<MapCell>();
             }
         }
-
-        // Tìm điểm kết thúc tối ưu
-        double finalCost = double.MaxValue;
-        (int x, int y) end = (-1, -1);
-        foreach (var (x, y) in positions[p])
+        catch (Exception ex)
         {
-            if (cost[x, y] < finalCost)
-            {
-                finalCost = cost[x, y];
-                end = (x, y);
-            }
+            // Console.WriteLine($"FindShortestPath: {JsonSerializer.Serialize(ex)}");
+            Console.WriteLine($"Error in FindShortestPath: {ex.StackTrace}");
+            return new List<MapCell>();
         }
-
-        // Truy ngược đường đi thành List<MapCell>
-        var resultPath = new List<MapCell>();
-        var current = end;
-        while (current != (0, 0))
-        {
-            resultPath.Add(new MapCell
-            {
-                // MapId = map.Id,
-                RowIndex = current.x,
-                ColIndex = current.y,
-                Value = matrix[current.x][current.y]
-            });
-            current = prev[current.x, current.y];
-        }
-
-        // Thêm điểm bắt đầu (0,0)
-        resultPath.Add(new MapCell
-        {
-            // MapId = map.Id,
-            RowIndex = 0,
-            ColIndex = 0,
-            Value = matrix[0][0]
-        });
-
-        resultPath.Reverse();
-        return resultPath;
     }
+
     public double CalculateTotalFuel(List<MapCell> path)
     {
         double fuel = 0;
