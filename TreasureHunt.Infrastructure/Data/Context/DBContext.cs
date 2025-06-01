@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using TreasureHunt.Application.Models;
-using TreasureHunt.Infrastructure.Data.Entities;
+// using TreasureHunt.Infrastructure.Data.Entities;
 
 namespace TreasureHunt.Infrastructure.Context
 {
@@ -48,7 +48,7 @@ namespace TreasureHunt.Infrastructure.Context
             {
                 entity.HasOne<TreasureMap>()
                     .WithMany(map => map.Solutions)
-                    .HasForeignKey(cell => cell.MapId)
+                    .HasForeignKey(sol => sol.MapId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
 

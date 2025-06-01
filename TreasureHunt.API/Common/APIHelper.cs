@@ -20,7 +20,7 @@ namespace TreasureHunt.API.Controllers
         /// <returns></returns>
         protected T ContentReturn<T>(Result<object> result, string apiName)
         {
-            result.Message = $"{result.Code}-{result.Message}";
+            result.Message = result.Message ?? result.Code.ToString();
 
             if (result.Code != ResultCode.Success)
             {

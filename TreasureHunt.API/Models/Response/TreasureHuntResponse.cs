@@ -1,12 +1,12 @@
 using TreasureHunt.API.Models;
 using TreasureHunt.API.Models.Enums;
-using TreasureHunt.Infrastructure.Data.Entities;
+using TreasureHunt.Application.Models;
 
 public class TreasureHuntResponse : BaseResponse
 {
-    public double? Data { get; set; }
+    public Solution? Data { get; set; }
 
-    public TreasureHuntResponse(double data, ResultCode code, string message) : base()
+    public TreasureHuntResponse(Solution data, ResultCode code, string message) : base()
     {
         Data = data;
         Code = code;
@@ -14,9 +14,9 @@ public class TreasureHuntResponse : BaseResponse
     }
     public TreasureHuntResponse(Result<object> result) : base(result)
     {
-        if (result.Data != null)
+        if (result.Data != null && result.Data is Solution)
         {
-            Data = (double)result.Data;
+            Data = (Solution)result.Data;
         }
         else
         {
@@ -46,12 +46,10 @@ public class TreasureHuntMapsResponse : BaseResponse
         }
         else
         {
-            Data = new List<TreasureMap>(); // Default value if Data is not a double
+            Data = new List<TreasureMap>();
         }
     }
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public TreasureHuntMapsResponse()
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
     }
 

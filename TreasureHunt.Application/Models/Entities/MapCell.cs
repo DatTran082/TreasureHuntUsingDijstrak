@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TreasureHunt.Infrastructure.Data.Entities;
+// namespace TreasureHunt.Infrastructure.Data.Entities;
+namespace TreasureHunt.Application.Models;
 
 public class MapCell
 {
@@ -20,4 +20,4 @@ public class MapCell
     [Range(0, int.MaxValue)]
     public int Value { get; set; }
 }
-    // public TreasureMap TreasureMap { get; set; } = null!;
+// public TreasureMap TreasureMap { get; set; } = null!;

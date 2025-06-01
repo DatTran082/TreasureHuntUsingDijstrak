@@ -6,7 +6,7 @@ using TreasureHunt.API.Models;
 using TreasureHunt.API.Models.Enums;
 using TreasureHunt.Application.Interfaces;
 using TreasureHunt.Application.Models;
-using TreasureHunt.Infrastructure.Data.Entities;
+// using TreasureHunt.Infrastructure.Data.Entities;
 using TreasureHunt.Infrastructure.Interfaces;
 using System.Reflection;
 
@@ -28,27 +28,12 @@ public class TreasureHuntController : APIHelper
     }
 
     [HttpPost("solve")]
-    public async Task<TreasureHuntResponse> Solve(string? rawrequest)
+    public async Task<TreasureHuntResponse> Solve(TreasureHuntRequest? request)
     {
         var result = new Result<object>();
         try
         {
-            if (string.IsNullOrEmpty(rawrequest))
-            {
-                result.Code = ResultCode.InvalidInput;
-                return ContentReturn<TreasureHuntResponse>(result, "Solve");
-            }
-            TreasureHuntRequest request = null;
-            try
-            {
-                request = JsonSerializer.Deserialize<TreasureHuntRequest>(rawrequest);
-            }
-            catch (JsonException)
-            {
-                result.Code = ResultCode.InvalidInput;
-                result.Message = "Invalid JSON format.";
-                return ContentReturn<TreasureHuntResponse>(result, "Solve");
-            }
+
 
             if (request == null)
             {
@@ -58,30 +43,24 @@ public class TreasureHuntController : APIHelper
 
             var checkRequest = request.checkParam();
 
-            var inputre = (string)checkRequest.Data;
 
-            if (string.IsNullOrEmpty(inputre))
+            if (request.data == null)
             {
                 result.Code = ResultCode.InvalidInput;
-                return ContentReturn<TreasureHuntResponse>(result, "Solve");
-            }
-
-
-            var inputTreasure = JsonSerializer.Deserialize<TreasureInput>(request.data);
-            if (inputTreasure == null)
-            {
-                result.Code = ResultCode.InvalidInput;
-                result.Message = "Invalid TreasureInput format.";
+                result.Message = "Invalid TreasureInput";
                 return ContentReturn<TreasureHuntResponse>(result, "Solve");
             }
             else
             {
-                var resultc = _solverService.Solve(inputTreasure);
-                result.Data = resultc;
+                var mapInput = await _mapService.GetMapByIdAsync(request.data);
+                var solution = _solverService.SolveTreasureMap(mapInput);
+                // var readdslns = await _mapService.AddSolutionByMapIdAsync(solution);
+
+
+                result.Data = solution;
                 return ContentReturn<TreasureHuntResponse>(result, "Solve");
             }
         }
-
         catch (Exception ex)
         {
             result.Code = ResultCode.SystemError;
@@ -121,19 +100,24 @@ public class TreasureHuntController : APIHelper
     }
 
     [HttpPost("CreateMap")]
-    public async Task<TreasureHuntMapsResponse> CreateMap(TreasureInput request)
+    public async Task<TreasureHuntMapsResponse> CreateMap(TreasureMapRequest? request)
     {
         var result = new Result<object>();
         try
         {
-
             if (request == null)
             {
                 result.Code = ResultCode.InvalidInput;
                 return ContentReturn<TreasureHuntMapsResponse>(result, "CreateMap");
             }
+            if (request.data == null)
+            {
+                result.Code = ResultCode.InvalidInput;
+                result.Message = "TreasureInput data is required.";
+                return ContentReturn<TreasureHuntMapsResponse>(result, "CreateMap");
+            }
 
-            var map = await _mapService.CreateMapAsync(request);
+            var map = await _mapService.CreateMapAsync(request.data);
             result.Data = new List<TreasureMap>() { map };
             result.Message = "Map created successfully";
             return ContentReturn<TreasureHuntMapsResponse>(result, "CreateMap");

@@ -12,8 +12,8 @@ using TreasureHunt.Infrastructure.Context;
 namespace TreasureHunt.Infrastructure.Migrations
 {
     [DbContext(typeof(TreasureDbContext))]
-    [Migration("20250529041324_initdb")]
-    partial class initdb
+    [Migration("20250531160019_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace TreasureHunt.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TreasureHunt.Infrastructure.Data.Entities.MapCell", b =>
+            modelBuilder.Entity("TreasureHunt.Application.Models.MapCell", b =>
                 {
                     b.Property<int>("CellId")
                         .ValueGeneratedOnAdd()
@@ -42,6 +42,9 @@ namespace TreasureHunt.Infrastructure.Migrations
                     b.Property<int>("RowIndex")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SolutionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Value")
                         .HasColumnType("int");
 
@@ -49,10 +52,12 @@ namespace TreasureHunt.Infrastructure.Migrations
 
                     b.HasIndex("MapId");
 
+                    b.HasIndex("SolutionId");
+
                     b.ToTable("MapCells");
                 });
 
-            modelBuilder.Entity("TreasureHunt.Infrastructure.Data.Entities.Solution", b =>
+            modelBuilder.Entity("TreasureHunt.Application.Models.Solution", b =>
                 {
                     b.Property<int>("SolutionId")
                         .ValueGeneratedOnAdd()
@@ -60,7 +65,7 @@ namespace TreasureHunt.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SolutionId"));
 
-                    b.Property<double>("FuelUsed")
+                    b.Property<double>("Fuel")
                         .HasColumnType("float");
 
                     b.Property<int>("MapId")
@@ -76,7 +81,7 @@ namespace TreasureHunt.Infrastructure.Migrations
                     b.ToTable("Solutions");
                 });
 
-            modelBuilder.Entity("TreasureHunt.Infrastructure.Data.Entities.TreasureMap", b =>
+            modelBuilder.Entity("TreasureHunt.Application.Models.TreasureMap", b =>
                 {
                     b.Property<int>("MapId")
                         .ValueGeneratedOnAdd()
@@ -90,9 +95,6 @@ namespace TreasureHunt.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MaxLevel")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -101,34 +103,42 @@ namespace TreasureHunt.Infrastructure.Migrations
                     b.Property<int>("Rows")
                         .HasColumnType("int");
 
+                    b.Property<int>("TreasureValue")
+                        .HasColumnType("int");
+
                     b.HasKey("MapId");
 
                     b.ToTable("TreasureMaps");
                 });
 
-            modelBuilder.Entity("TreasureHunt.Infrastructure.Data.Entities.MapCell", b =>
+            modelBuilder.Entity("TreasureHunt.Application.Models.MapCell", b =>
                 {
-                    b.HasOne("TreasureHunt.Infrastructure.Data.Entities.TreasureMap", "TreasureMap")
+                    b.HasOne("TreasureHunt.Application.Models.TreasureMap", null)
                         .WithMany("Cells")
                         .HasForeignKey("MapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TreasureMap");
+                    b.HasOne("TreasureHunt.Application.Models.Solution", null)
+                        .WithMany("Path")
+                        .HasForeignKey("SolutionId");
                 });
 
-            modelBuilder.Entity("TreasureHunt.Infrastructure.Data.Entities.Solution", b =>
+            modelBuilder.Entity("TreasureHunt.Application.Models.Solution", b =>
                 {
-                    b.HasOne("TreasureHunt.Infrastructure.Data.Entities.TreasureMap", "TreasureMap")
+                    b.HasOne("TreasureHunt.Application.Models.TreasureMap", null)
                         .WithMany("Solutions")
                         .HasForeignKey("MapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("TreasureMap");
                 });
 
-            modelBuilder.Entity("TreasureHunt.Infrastructure.Data.Entities.TreasureMap", b =>
+            modelBuilder.Entity("TreasureHunt.Application.Models.Solution", b =>
+                {
+                    b.Navigation("Path");
+                });
+
+            modelBuilder.Entity("TreasureHunt.Application.Models.TreasureMap", b =>
                 {
                     b.Navigation("Cells");
 

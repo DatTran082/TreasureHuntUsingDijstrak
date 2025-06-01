@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TreasureHunt.Application.Models;
 using TreasureHunt.Infrastructure.Context;
-using TreasureHunt.Infrastructure.Data.Entities;
+// using TreasureHunt.Infrastructure.Data.Entities;
 using TreasureHunt.Infrastructure.Interfaces;
 
 public class TreasureMapService : ITreasureMapService
@@ -26,7 +26,7 @@ public class TreasureMapService : ITreasureMapService
             Name = m.Name,
             Rows = m.Rows,
             Columns = m.Columns,
-            MaxLevel = m.MaxLevel,
+            TreasureValue = m.TreasureValue,
             Cells = m.Cells.Select(c => new MapCell
             {
                 MapId = c.MapId,
@@ -35,17 +35,17 @@ public class TreasureMapService : ITreasureMapService
                 ColIndex = c.ColIndex,
                 Value = c.Value
             }).ToList()
-        }).ToList();
+        }).OrderByDescending(m => m.MapId).ToList();
     }
 
     public async Task<TreasureMap> CreateMapAsync(TreasureInput input)
     {
         var treasureMap = new TreasureMap
         {
-            Name = DateTime.Now.ToString("yyyyMMddHHmmss"),
+            Name = input.Name ?? DateTime.Now.ToString("yyyyMMddHHmmss"),
             Rows = input.N,
             Columns = input.M,
-            MaxLevel = input.P,
+            TreasureValue = input.P,
             Cells = new List<MapCell>()
         };
 
@@ -67,5 +67,47 @@ public class TreasureMapService : ITreasureMapService
         var result = await _context.SaveChangesAsync();
 
         return result > 0 ? treasureMap : null;
+    }
+
+    public async Task<TreasureMap?> GetMapByIdAsync(int mapId)
+    {
+        var map = await _context.TreasureMaps.Include(m => m.Cells).FirstOrDefaultAsync(m => m.MapId == mapId);
+
+        if (map == null)
+        {
+            return null;
+        }
+
+
+        return new TreasureMap
+        {
+            MapId = map.MapId,
+            Name = map.Name,
+            Rows = map.Rows,
+            Columns = map.Columns,
+            TreasureValue = map.TreasureValue,
+            Cells = map.Cells.Select(c => new MapCell
+            {
+                MapId = c.MapId,
+                CellId = c.CellId,
+                RowIndex = c.RowIndex,
+                ColIndex = c.ColIndex,
+                Value = c.Value
+            }).ToList()
+        };
+    }
+    public async Task<Solution?> AddSolutionByMapIdAsync(Solution solution)
+    {
+        var map = await _context.TreasureMaps.FindAsync(solution.MapId);
+        if (map == null)
+        {
+            return null;
+        }
+
+        solution.MapId = solution.MapId;
+        _context.Solutions.Add(solution);
+        var result = await _context.SaveChangesAsync();
+
+        return result > 0 ? solution : null;
     }
 }
