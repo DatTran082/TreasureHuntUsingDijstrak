@@ -203,7 +203,9 @@ public class TreasureSolverService : ITreasureSolverService
         // Khởi tạo danh sách vị trí của từng giá trị 1 → p
         var positions = new List<(int row, int col)>[p + 1];
         for (int i = 0; i <= p; i++)
+        {
             positions[i] = new List<(int, int)>();
+        }
 
         // Thu thập vị trí các giá trị từ 1 → p (bỏ qua 0 và > p)
         for (int i = 0; i < n; i++)
@@ -232,11 +234,13 @@ public class TreasureSolverService : ITreasureSolverService
         (int x, int y)[,] prev = new (int, int)[n, m];
 
         for (int i = 0; i < n; i++)
+        {
             for (int j = 0; j < m; j++)
             {
                 cost[i, j] = double.MaxValue;
                 prev[i, j] = (-1, -1);
             }
+        }
 
         // Đi từ (0,0) đến tất cả ô chứa rương số 1
         foreach (var (x, y) in positions[1])
@@ -295,7 +299,7 @@ public class TreasureSolverService : ITreasureSolverService
             current = prev[current.x, current.y];
         }
 
-        // Thêm ô xuất phát (0,0)
+        // Thêm cell xuất phát (0,0)
         path.Add(new MapCell
         {
             // MapId = map.Id,
