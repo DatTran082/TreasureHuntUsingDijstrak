@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TreasureHunt.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+852bb74314f6eb80bd4bc777d6f541e635150832")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4239b292d1ba510cf987bf9e811f9c0ac739493")]
 [assembly: System.Reflection.AssemblyProductAttribute("TreasureHunt.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TreasureHunt.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
